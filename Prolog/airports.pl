@@ -75,25 +75,19 @@ final_trip(Source,Source,[Source],_). */
 
 
 
-% get a path from start to end
-trip(X,Y,T) :- trip(X,Y,[X],T).
 
-% when target reached, reverse the visited list
-trip(Y,Y,R,T) :- reverse(R,T).
+% get a path from start to end
+trip(Start, End, Path) :- trip(Start, End, [Start], Path).
 
 % take non deterministically an edge, check if already visited before use
-trip(X,Y,Visited,T) :- flight(X,Z,_,_,_,_),
-				  not(member(Z,Visited)),
-				  trip(Z,Y,[Z|Visited],T).
+trip(Start, End, Visited, Path) :- flight(Start, Next,_,_,_,_),
+								   not(member(Next,Visited)),
+				 				   trip(Next, End, [Next|Visited], Path).
 
- 
+% when target reached, reverse the visited list
+trip(End, End, RPath, Path) :- reverse(RPath, Path).
+
+
 
 
 /*3*/
-all_trip(Source,Destination,T) :- final_trip2(Source,Destination,T,[]).
-
-final_trip2(Source,Source,[Source],_). 
-
-final_trip2(Source,Destination,[Source|T],Visited) :- flight(Source,Z,_,_,_,_),
-						  							   not(member(Z,Visited)),
-				   		  							final_trip2(Z,Destination,T,[Z|Visited]).
