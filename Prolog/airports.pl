@@ -56,25 +56,44 @@ country(rio,brazil).
 
 /*1 */ list_airport(Y,L) :- findall(X, country(X,Y),L). 
 
-/*trip_helper(X,Y,[X,Y]) :- flight(X,Y,_,_,_,_).
-trip(X,Y,[X|T]) :- flight(X,Z,_,_,_,_), trip(Z,Y,T). */
-
-/*trip(X,Y,T) :- trip_helper(X,Y,T,[X]). 
-trip_helper(X,X,[X],V).*/
 
 
 
+/*2*/
+
+/*trip1(Source,Destination,T) :- final_trip(Source,Destination,T,[]).
 
 
-trip(X,Y,T) :- trip_helper(X,Y,T,[]).
 
-trip_helper(X,Y,[X|T],V) :- flight(X,Z,_,_,_,_),
-					 not(member(Z,V)),
-				     trip_helper(Z,Y,T,[Z|V]).
+final_trip(Source,Destination,[Source|T],Visited) :- flight(Source,Z,_,_,_,_),
+						  							   not(member(Z,Visited)),
+				   		  							   final_trip(Z,Destination,T,[Z|Visited]). 
 
-trip_helper(X,X,[X],V).
+final_trip(Source,Source,[Source],_). */
 
 
+
+
+
+% get a path from start to end
+trip(X,Y,T) :- trip(X,Y,[X],T).
+
+% when target reached, reverse the visited list
+trip(Y,Y,R,T) :- reverse(R,T).
+
+% take non deterministically an edge, check if already visited before use
+trip(X,Y,Visited,T) :- flight(X,Z,_,_,_,_),
+				  not(member(Z,Visited)),
+				  trip(Z,Y,[Z|Visited],T).
+
+ 
 
 
 /*3*/
+all_trip(Source,Destination,T) :- final_trip2(Source,Destination,T,[]).
+
+final_trip2(Source,Source,[Source],_). 
+
+final_trip2(Source,Destination,[Source|T],Visited) :- flight(Source,Z,_,_,_,_),
+						  							   not(member(Z,Visited)),
+				   		  							final_trip2(Z,Destination,T,[Z|Visited]).
