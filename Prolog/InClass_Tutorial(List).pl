@@ -41,4 +41,3 @@ filter_list([Head|Tail],N,F):- Head =< N,
 							append([Head],F1,F).
 
 
-intersect(X,Y,Z):- 
