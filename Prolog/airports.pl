@@ -1,6 +1,6 @@
 flight(london,dublin,aerlingus,500,45,150).
 flight(rome,london,ba,1500,150,400).
-flight(rome,paris,airfrance,1200,120,500). 
+flight(rome,paris,airfrance,1200,120,500).
 flight(paris,dublin,airfrance,600,60,200).
 flight(berlin,moscow,lufthansa,3000,300,900).
 flight(paris,amsterdam,airfrance,400,30,100).
@@ -18,7 +18,7 @@ flight(moscow,hongkong,aerflot,5500,420,500).
 flight(newyork,chicago,aa,3000,240,430).
 flight(dublin,london,aerlingus,500,45,150).
 flight(london,rome,ba,1500,150,400).
-flight(paris,rome,airfrance,1200,120,500). 
+flight(paris,rome,airfrance,1200,120,500).
 flight(dublin,paris,airfrance,600,60,200).
 flight(moscow,berlin,lufthansa,3000,300,900).
 flight(amsterdam,paris,airfrance,400,30,100).
@@ -54,27 +54,74 @@ country(rio,brazil).
 
 /*<-------------------------------Rules----------------------------->*/
 
-/*1 */ list_airport(Y,L) :- findall(X, country(X,Y),L). 
-
-/*trip_helper(X,Y,[X,Y]) :- flight(X,Y,_,_,_,_).
-trip(X,Y,[X|T]) :- flight(X,Z,_,_,_,_), trip(Z,Y,T). */
-
-/*trip(X,Y,T) :- trip_helper(X,Y,T,[X]). 
-trip_helper(X,X,[X],V).*/
+/*1 */ list_airport(Y,L) :- findall(X, country(X,Y),L).
 
 
 
-
-
-trip(X,Y,T) :- trip_helper(X,Y,T,[]).
-
-trip_helper(X,Y,[X|T],V) :- flight(X,Z,_,_,_,_),
+/*2*/
+trip(X,Y,T) :- trip_helper(X,Y,[X,Y],T).
+trip_helper(X,Y,_,[X,Y]) :- flight(X,Y,_,_,_,_).
+trip_helper(X,Y,V,[X|T]) :- flight(X,Z,_,_,_,_),
 					 not(member(Z,V)),
-				     trip_helper(Z,Y,T,[Z|V]).
-
-trip_helper(X,X,[X],V).
-
+				     trip_helper(Z,Y,[Z|V],T).
 
 
 
 /*3*/
+all_trip(X,Y,T) :- findall(A,trip(X,Y,A),T).
+
+/*4*/
+
+dist([X,Y],D):- flight(X,Y,_,D,_,_).
+
+dist([X,Y|T],D) :- flight(X,Y,_,D1,_,_),
+					dist([Y|T],D2),
+					D is D1 + D2.
+
+trip_dist(X,Y,[T,D]) :- trip(X,Y,T),
+						dist(T,D).
+
+
+/*5*/
+cost([X,Y],C):- flight(X,Y,_,_,_,C).
+
+cost([X,Y|T],C) :- flight(X,Y,_,_,_,C1),
+					cost([Y|T],C2),
+					C is C1 + C2.
+
+trip_cost(X,Y,[T,C]) :- trip(X,Y,T),
+						cost(T,C).
+
+/*6*/
+trip_time(X,Y,[T,I]) :- trip(X,Y,T),
+						length(T,A),
+						I is A - 2.
+
+
+/*7*/
+
+noairline([X,Y],A) :- flight(X,Y,A1,_,_,_),
+						not(A = A1).
+			
+noairline([X,Y|T],A) :- flight(X,Y,A1,_,_,_),
+						not(A = A1),
+					    noairline([Y|T],A).
+
+all_trip_noairline(X,Y,T,A) :- trip(X,Y,T),
+							   noairline(T,A).
+						
+
+/*8*/
+
+find_min([[_,Y]|T],M) :- 
+		find_min(T,[[[_,Y],M).
+
+find_min([],M,M).
+
+/*find_min([_,Y|T], M):-
+					Y =< T,
+					find_min([T|A], M). */
+					
+      			
+cheapest(X,Y,T,C) :-  findall(A,trip_cost(X,Y,A),T),
+					  find_min(T,C).
