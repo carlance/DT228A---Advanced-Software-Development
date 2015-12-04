@@ -52,6 +52,8 @@ country(chicago,usa).
 country(sao_paulo,brazil).
 country(rio,brazil).
 
+/*<-------------------------------Part1----------------------------->*/
+
 /*<-------------------------------Rules----------------------------->*/
 
 /*1 */ list_airport(Y,L) :- findall(X, country(X,Y),L).
