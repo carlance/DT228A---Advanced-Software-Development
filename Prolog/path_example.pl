@@ -17,3 +17,6 @@ path(Start, End, Visited, Path) :-
     edge(Start, Next),
     \+ memberchk(Next, Visited),
     path(Next, End, [Next|Visited], Path).
+
+
+    
