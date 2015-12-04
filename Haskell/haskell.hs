@@ -1,3 +1,6 @@
+--Haskell Assignment 
+--Submission Date: January-4-2016
+
 -- Question 1
 
 is_square :: Int -> Bool
