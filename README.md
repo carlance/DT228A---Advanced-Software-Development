@@ -1,4 +1,4 @@
-### DT228A---Advanced-Software-Development 
+### Advanced-Software-Development 
 * Contains Prolog material from college
 * Contains Haskell material from college
 
