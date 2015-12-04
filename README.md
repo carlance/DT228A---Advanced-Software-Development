@@ -1,5 +1,7 @@
-# DT228A---Advanced-Software-Development
+### DT228A---Advanced-Software-Development 
+* Contains Prolog material from college
 
-##Prolog
-[Visit Prolog Website!](https://www.github.com)
+
+####Prolog
+[Visit Prolog Website!](http://www.swi-prolog.org/)
  
