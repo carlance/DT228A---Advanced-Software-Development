@@ -113,15 +113,21 @@ all_trip_noairline(X,Y,T,A) :- trip(X,Y,T),
 
 /*8*/
 
-find_min([[_,Y]|T],M) :- 
-		find_min(T,[[[_,Y],M).
+/*-------<Head with two elements of type list>---------*/
+/*--------[    X      ,	     Y   ]------|Tail]--------------------*/
+/*--------[List, Cost],[List, Cost]-----------------------*/
+/*-----------Compare two elements with each other based on costs-------*/
 
-find_min([],M,M).
+find_min([M],M). 
 
-/*find_min([_,Y|T], M):-
-					Y =< T,
-					find_min([T|A], M). */
-					
+find_min([[_  ,  C1],[H2 ,  C2] 		|T],M) :-   C1 > C2,
+												    find_min([[H2,C2]|T],M).
+												   
+
+find_min([[H1 ,  C1],[_  ,  C2]			|T],M) :- 	C1 =< C2, 
+													find_min([[H1,C1]|T],M). 
+
+
       			
-cheapest(X,Y,T,C) :-  findall(A,trip_cost(X,Y,A),T),
-					  find_min(T,C).
+cheapest(X,Y,T,C) :-  findall(A,trip_cost(X,Y,A),T1), find_min(T1,[T,C]). 
+
