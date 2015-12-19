@@ -1,3 +1,8 @@
+/*--------------------------------Prolog Assignment -----------------------------------*/
+/*-----------------------------Date: December 19' 2015---------------------------------*/
+/*--------------------------Carl Lawrence Mariano - C10309107--------------------------*/
+
+
 flight(london,dublin,aerlingus,500,45,150).
 flight(rome,london,ba,1500,150,400).
 flight(rome,paris,airfrance,1200,120,500).
@@ -52,25 +57,29 @@ country(chicago,usa).
 country(sao_paulo,brazil).
 country(rio,brazil).
 
-/*<-------------------------------Part1----------------------------->*/
+/*<-------------------------------Part 1 - Rules----------------------------->*/
 
-/*<-------------------------------Rules----------------------------->*/
-
-/*1 */ list_airport(Y,L) :- findall(X, country(X,Y),L).
+/*1 */ list_airport(X,L) :- findall(Y, country(Y,X),L).
 
 
 
 /*2*/
-trip(X,Y,T) :- trip_helper(X,Y,[X,Y],T).
-trip_helper(X,Y,_,[X,Y]) :- flight(X,Y,_,_,_,_).
+trip_helper(X,Y,_,[X,Y]) :- flight(X,Y,_,_,_,_). /*direct flight, base rule*/ 
+
+
+
 trip_helper(X,Y,V,[X|T]) :- flight(X,Z,_,_,_,_),
-					 not(member(Z,V)),
-				     trip_helper(Z,Y,[Z|V],T).
+					 not(member(Z,V)), /* if city is not yet in the list, then add it */
+				     trip_helper(Z,Y,[Z|V],T). /*call rule recursively*/
+
+trip(X,Y,T) :- trip_helper(X,Y,[X,Y],T). /*gets connecting flights*/
+
 
 
 
 /*3*/
 all_trip(X,Y,T) :- findall(A,trip(X,Y,A),T).
+
 
 /*4*/
 
@@ -83,6 +92,32 @@ dist([X,Y|T],D) :- flight(X,Y,_,D1,_,_),
 trip_dist(X,Y,[T,D]) :- trip(X,Y,T),
 						dist(T,D).
 
+/*Sample Output
+ trip_dist(rome,dublin,D).
+D = [[rome, dublin], 2000] ;
+D = [[rome, london, dublin], 2000] ;
+D = [[rome, london, newyork, dublin], 11000] ;
+D = [[rome, london, newyork, chicago, dublin], 15000] ;
+D = [[rome, london, newyork, moscow, hongkong, amsterdam, dublin], 29000] ;
+D = [[rome, london, newyork, moscow, hongkong, amsterdam, paris, dublin], 29000] ;
+D = [[rome, london, newyork, moscow, berlin, dublin], 19700] ;
+D = [[rome, london, hongkong, amsterdam, dublin], 17000] ;
+D = [[rome, london, hongkong, amsterdam, paris, dublin], 17000] ;
+D = [[rome, london, hongkong, moscow, newyork, dublin], 28000] ;
+D = [[rome, london, hongkong, moscow, newyork, chicago, dublin], 32000] ;
+D = [[rome, london, hongkong, moscow, berlin, dublin], 18700] ;
+D = [[rome, paris, dublin], 1800] ;
+D = [[rome, paris, amsterdam, dublin], 2600] ;
+D = [[rome, paris, amsterdam, hongkong, london, dublin], 16600] ;
+D = [[rome, paris, amsterdam, hongkong, london, newyork, dublin], 25600] ;
+D = [[rome, paris, amsterdam, hongkong, london, newyork, chicago, dublin], 29600] ;
+D = [[rome, paris, amsterdam, hongkong, london, newyork, moscow, berlin|...], 34300] ;
+D = [[rome, paris, amsterdam, hongkong, moscow, newyork, dublin], 27600] ;
+D = [[rome, paris, amsterdam, hongkong, moscow, newyork, chicago, dublin], 31600] ;
+D = [[rome, paris, amsterdam, hongkong, moscow, newyork, london, dublin], 28600] ;
+D = [[rome, paris, amsterdam, hongkong, moscow, berlin, dublin], 18300] ;
+*/
+
 
 /*5*/
 cost([X,Y],C):- flight(X,Y,_,_,_,C).
@@ -94,11 +129,62 @@ cost([X,Y|T],C) :- flight(X,Y,_,_,_,C1),
 trip_cost(X,Y,[T,C]) :- trip(X,Y,T),
 						cost(T,C).
 
+/* Sample Output
+ trip_cost(rome,dublin,C).
+C = [[rome, dublin], 70] ;
+C = [[rome, london, dublin], 550] ;
+C = [[rome, london, newyork, dublin], 2300] ;
+C = [[rome, london, newyork, chicago, dublin], 2820] ;
+C = [[rome, london, newyork, moscow, hongkong, amsterdam, dublin], 3810] ;
+C = [[rome, london, newyork, moscow, hongkong, amsterdam, paris, dublin], 4050] ;
+C = [[rome, london, newyork, moscow, berlin, dublin], 4300] ;
+C = [[rome, london, hongkong, amsterdam, dublin], 2210] ;
+C = [[rome, london, hongkong, amsterdam, paris, dublin], 2450] ;
+C = [[rome, london, hongkong, moscow, newyork, dublin], 3700] ;
+C = [[rome, london, hongkong, moscow, newyork, chicago, dublin], 4220] ;
+C = [[rome, london, hongkong, moscow, berlin, dublin], 3700] ;
+C = [[rome, paris, dublin], 700] ;
+C = [[rome, paris, amsterdam, dublin], 660] ;
+C = [[rome, paris, amsterdam, hongkong, london, dublin], 2500] ;
+C = [[rome, paris, amsterdam, hongkong, london, newyork, dublin], 4250] ;
+C = [[rome, paris, amsterdam, hongkong, london, newyork, chicago, dublin], 4770] ;
+C = [[rome, paris, amsterdam, hongkong, london, newyork, moscow, berlin|...], 6250] ;
+C = [[rome, paris, amsterdam, hongkong, moscow, newyork, dublin], 3650] ;
+C = [[rome, paris, amsterdam, hongkong, moscow, newyork, chicago, dublin], 4170] ;
+C = [[rome, paris, amsterdam, hongkong, moscow, newyork, london, dublin], 4100] ;
+C = [[rome, paris, amsterdam, hongkong, moscow, berlin, dublin], 3650] ;
+*/
+
 /*6*/
 trip_time(X,Y,[T,I]) :- trip(X,Y,T),
 						length(T,A),
-						I is A - 2.
+						I is A - 2. /*ignore the first and last trip in the list*/
 
+/*Sample Output
+trip_time(rome,dublin,T).
+T = [[rome, dublin], 0] ;
+T = [[rome, london, dublin], 1] ;
+T = [[rome, london, newyork, dublin], 2] ;
+T = [[rome, london, newyork, chicago, dublin], 3] ;
+T = [[rome, london, newyork, moscow, hongkong, amsterdam, dublin], 5] ;
+T = [[rome, london, newyork, moscow, hongkong, amsterdam, paris, dublin], 6] ;
+T = [[rome, london, newyork, moscow, berlin, dublin], 4] ;
+T = [[rome, london, hongkong, amsterdam, dublin], 3] ;
+T = [[rome, london, hongkong, amsterdam, paris, dublin], 4] ;
+T = [[rome, london, hongkong, moscow, newyork, dublin], 4] ;
+T = [[rome, london, hongkong, moscow, newyork, chicago, dublin], 5] ;
+T = [[rome, london, hongkong, moscow, berlin, dublin], 4] ;
+T = [[rome, paris, dublin], 1] ;
+T = [[rome, paris, amsterdam, dublin], 2] ;
+T = [[rome, paris, amsterdam, hongkong, london, dublin], 4] ;
+T = [[rome, paris, amsterdam, hongkong, london, newyork, dublin], 5] ;
+T = [[rome, paris, amsterdam, hongkong, london, newyork, chicago, dublin], 6] ;
+T = [[rome, paris, amsterdam, hongkong, london, newyork, moscow, berlin|...], 7] ;
+T = [[rome, paris, amsterdam, hongkong, moscow, newyork, dublin], 5] ;
+T = [[rome, paris, amsterdam, hongkong, moscow, newyork, chicago, dublin], 6] ;
+T = [[rome, paris, amsterdam, hongkong, moscow, newyork, london, dublin], 6] ;
+T = [[rome, paris, amsterdam, hongkong, moscow, berlin, dublin], 5] ;
+*/
 
 /*7*/
 
@@ -111,25 +197,86 @@ noairline([X,Y|T],A) :- flight(X,Y,A1,_,_,_),
 
 all_trip_noairline(X,Y,T,A) :- trip(X,Y,T),
 							   noairline(T,A).
-						
 
-/*8*/
+/*	Sample Output						   
+ all_trip_noairline(rome,dublin,T,ryanair).
+T = [rome, london, dublin] ;
+T = [rome, london, newyork, dublin] ;
+T = [rome, london, newyork, chicago, dublin] ;
+T = [rome, london, newyork, moscow, hongkong, amsterdam, paris, dublin] ;
+T = [rome, london, newyork, moscow, berlin, dublin] ;
+T = [rome, london, hongkong, amsterdam, paris, dublin] ;
+T = [rome, london, hongkong, moscow, newyork, dublin] ;
+T = [rome, london, hongkong, moscow, newyork, chicago, dublin] ;
+T = [rome, london, hongkong, moscow, berlin, dublin] ;
+T = [rome, paris, dublin] ;
+T = [rome, paris, amsterdam, hongkong, london, dublin] ;
+T = [rome, paris, amsterdam, hongkong, london, newyork, dublin] ;
+T = [rome, paris, amsterdam, hongkong, london, newyork, chicago, dublin] ;
+T = [rome, paris, amsterdam, hongkong, london, newyork, moscow, berlin, dublin] ;
+T = [rome, paris, amsterdam, hongkong, moscow, newyork, dublin] ;
+T = [rome, paris, amsterdam, hongkong, moscow, newyork, chicago, dublin] ;
+T = [rome, paris, amsterdam, hongkong, moscow, newyork, london, dublin] ;
+T = [rome, paris, amsterdam, hongkong, moscow, berlin, dublin] ;
+*/						
+
+/*8*/	
+
 
 /*-------<Head with two elements of type list>---------*/
 /*--------[    X      ,	     Y   ]------|Tail]--------------------*/
 /*--------[List, Cost],[List, Cost]-----------------------*/
-/*-----------Compare two elements with each other based on costs-------*/
+/*-----------Compare two elements with each other based on costs or time or distance-------*/
+/*---------Rule has been given some spaces for readability purposes---------------------*/
 
-find_min([M],M). 
+find_min([M],M). /*base rule*/
 
-find_min([[_  ,  C1],[H2 ,  C2] 		|T],M) :-   C1 > C2,
+/*If first element is greater than second element, pass second element along with tail to rule and call recursive function*/
+find_min( [[_  ,  C1],[H2 ,  C2] 		|T], M) :-   C1 > C2,	
 												    find_min([[H2,C2]|T],M).
 												   
-
-find_min([[H1 ,  C1],[_  ,  C2]			|T],M) :- 	C1 =< C2, 
+/*If second element is greater than first element, pass first element along with tail to rule and call recursive function*/
+find_min( [[H1 ,  C1],[_  ,  C2]		|T], M) :- 	C1 =< C2, 
 													find_min([[H1,C1]|T],M). 
 
 
       			
 cheapest(X,Y,T,C) :-  findall(A,trip_cost(X,Y,A),T1), find_min(T1,[T,C]). 
 
+/* Sample Output
+cheapest(rome,dublin,T,C).
+T = [rome, dublin],
+C = 70 ;
+*/
+
+shortest(X,Y,T,C) :-  findall(A,trip_dist(X,Y,A),T1), find_min(T1,[T,C]). 
+
+/* Sample Output
+shortest(rome,dublin,T,D).
+T = [rome, paris, dublin],
+D = 1800 ;
+*/
+
+fastest(X,Y,T,C) :-  findall(A,trip_time(X,Y,A),T1), find_min(T1,[T,C]). 
+
+/* Sample Output
+fastest(rome,dublin,T,T1).
+T = [rome, dublin],
+T1 = 0 ; 
+*/
+
+
+/*9*/
+trip_to_city(X,[Head|_],T1):- trip(X,Head,T1). /*base rule*/
+								
+
+trip_to_city(X,[_|Rest],T1):- trip_to_city(X,Rest,T1). /*recursive rule */
+	
+
+trip_to_nation(X,Y,T) :-	list_airport(Y,L), /*get list of airports in country*/
+							trip_to_city(X,L,T). /*pass city and list of airports in country to predicate*/
+												 /*	and return list T*/
+
+
+/*10*/
+all_trip_to_nation(X,Y,T):-	findall(L, (trip_to_nation(X,Y,L)), T).
