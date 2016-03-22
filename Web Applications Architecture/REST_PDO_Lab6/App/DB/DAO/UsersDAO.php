@@ -11,8 +11,8 @@ class UsersDAO {
 	}
 	function getUsers() {
 		$sql = "SELECT * ";
-		$sql .= "FROM users ";
-		$sql .= "ORDER BY users.name; ";
+		$sql .= "FROM users ";		
+		$sql .= "ORDER BY id; ";
 
 		$preparedSmt = $this->pdoDbManager->prepareQuery($sql);
 		$this->pdoDbManager->executeQuery ( $preparedSmt );
@@ -51,5 +51,49 @@ class UsersDAO {
 		//return $arrayOfResults;;
 
 	}
+	
+	function updateUser($decBody){
+		
+		$name = $decBody ["name"];
+		$surname = $decBody ["surname"];
+		$email = $decBody ["email"];
+		$password = $decBody ["password"];
+		
+		
+		
+		$query = "UPDATE users SET name=?,surname=?,email=?,password=? WHERE name='$name'";
+		
+		$preparedSmt = $this->pdoDbManager->prepareQuery($query);
+		
+		$this->pdoDbManager->bindValue($preparedSmt, 1, $name, PDO::PARAM_STR);
+		$this->pdoDbManager->bindValue($preparedSmt, 2, $surname, PDO::PARAM_STR);
+		$this->pdoDbManager->bindValue($preparedSmt, 3, $email, PDO::PARAM_STR);
+		$this->pdoDbManager->bindValue($preparedSmt, 4, $password, PDO::PARAM_INT);
+		
+		
+		$this->pdoDbManager->executeQuery ($preparedSmt);
+		
+		$arrayOfResults = $this->pdoDbManager->fetchResults ( $preparedSmt );
+			
+		return $arrayOfResults;
+		
+	}
+	
+	
+	function deleteUser($decBody){
+		
+		$name = $decBody ["name"];
+	
+		$query = "DELETE FROM users WHERE name='$name'";
+		
+		$preparedSmt = $this->pdoDbManager->prepareQuery($query);
+		
+		$this->pdoDbManager->bindValue($preparedSmt, 1, $name, PDO::PARAM_STR);
+			
+		$this->pdoDbManager->executeQuery ($preparedSmt);
+			
+		
+	}
+	
 }
 ?>
