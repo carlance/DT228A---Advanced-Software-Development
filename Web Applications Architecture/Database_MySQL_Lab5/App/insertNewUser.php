@@ -14,6 +14,8 @@ if(!empty($_GET['name']) && !empty($_GET['surname'])
 	$userDAO->insertUser($_GET);
 	$dbmanager->closeConnection();
 }
+
+
 //header("Refresh:1; listUsers.php");
-header('Location: listUsers.php');
+//header('Location: listUsers.php');
 ?>

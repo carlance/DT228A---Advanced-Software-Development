@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Luca
+ * @author Carl Lawrence Mariano
  * definition of the User DAO (database access object)
  */
 class UsersDAO {
