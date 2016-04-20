@@ -96,4 +96,6 @@ class UserController {
 		//TODO
 	}
 }
+
+//added comment 
 ?>
