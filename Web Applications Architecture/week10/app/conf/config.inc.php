@@ -16,7 +16,7 @@ define("ACTION_UPDATE_USER", 66);
 define("ACTION_DELETE_USER", 77);
 define("ACTION_SEARCH_USERS", 88);
 
-//hello
+
 /* HTTP status codes 2xx*/
 define("HTTPSTATUS_OK", 200);
 define("HTTPSTATUS_CREATED", 201);
