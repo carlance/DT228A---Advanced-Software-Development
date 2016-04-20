@@ -8,8 +8,6 @@ define("DB_NAME", "luca" ); 			// set database name
 define("DB_CHARSET", "utf8" ); 			// set database charset
 define("DB_DEBUGMODE", true ); 			// set database charset
 
-//this is a comment
-
 /* actions for the USERS REST resource */
 define("ACTION_GET_USER", 33);
 define("ACTION_GET_USERS", 44);
