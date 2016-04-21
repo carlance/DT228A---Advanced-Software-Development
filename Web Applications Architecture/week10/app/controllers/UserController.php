@@ -86,7 +86,21 @@ class UserController {
 		}
 	}
 	private function deleteUser($userId) {
-		//TODO
+				$answer=$this->model->deleteUser($userId);
+			if(!empty($answer)){
+				$this->slimApp->response()->setStatus(HTTPSTATUS_OK);
+				$Message = array (
+						GENERAL_MESSAGE_LABEL => GENERAL_RESOURCE_DELETED
+				);
+				$this->model->apiResponse = $Message;
+			}else {
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_BADREQUEST );
+			$Message = array (
+					GENERAL_MESSAGE_LABEL => GENERAL_NOCONTENT_MESSAGE
+			);
+			$this->model->apiResponse = $Message;
+		}
+			
 	}
 	
 	private function updateUser() {

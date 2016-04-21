@@ -40,7 +40,15 @@ class UsersDAO {
 		//TODO
 	}
 	public function delete($userID) {
-		//TODO
+		//delete user
+		$sql = "DELETE ";
+		$sql .= "FROM users ";
+		if ($userID != null)
+			$sql .= "WHERE users.id=? ";		
+		
+		$stmt = $this->dbManager->prepareQuery ( $sql );
+		$this->dbManager->bindValue ( $stmt, 1, $userID, $this->dbManager->INT_TYPE );
+		$this->dbManager->executeQuery ( $stmt );
 	}
 	public function search($str) {
 		//TODO

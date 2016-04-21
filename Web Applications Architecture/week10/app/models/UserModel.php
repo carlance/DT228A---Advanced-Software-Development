@@ -4,9 +4,10 @@ require_once "DB/DAO/UsersDAO.php";
 require_once "Validation.php";
 class UserModel {
 	private $UsersDAO; // list of DAOs used by this model
-	private $dbmanager; // dbmanager
-	public $apiResponse; // api response
+	private $dbmanager; // dbmanager	
 	private $validationSuite; // contains functions for validating inputs
+	public $apiResponse; // api response
+	
 	public function __construct() {
 		$this->dbmanager = new pdoDbManager ();
 		$this->UsersDAO = new UsersDAO ( $this->dbmanager );
@@ -52,7 +53,7 @@ class UserModel {
 		//TODO
 	}
 	public function deleteUser($userID) {
-		//TODO
+		return($this->UsersDAO->delete($userID));
 	}
 	public function __destruct() {
 		$this->UsersDAO = null;
