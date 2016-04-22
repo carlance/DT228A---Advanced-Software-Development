@@ -1,6 +1,6 @@
 <?php
 /**
- * @author luca
+ * @author Carl Lawrence Mariano
  * a basic implementation of a database manager
  */
 class pdoDbManager {
