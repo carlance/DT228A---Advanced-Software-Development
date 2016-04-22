@@ -28,6 +28,7 @@ class pdoDbManager {
 			exit ();
 		}
 	}
+	//Prepares an SQL statement to be executed by the PDOStatement::execute() method.
 	function prepareQuery($query) {
 		$stmt = $this->db_link->prepare ( $query );
 		return $stmt;

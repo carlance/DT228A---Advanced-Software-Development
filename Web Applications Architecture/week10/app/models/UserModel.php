@@ -47,14 +47,41 @@ class UserModel {
 		return (false);
 	}
 	public function updateUsers($userID, $userNewRepresentation) {
-		//TODO
+			
+		if (! empty ( $userNewRepresentation ["name"] ) && ! empty ( $userNewRepresentation ["surname"] ) && ! empty ( $userNewRepresentation ["email"] ) && ! empty ( $userNewRepresentation ["password"] )) {
+			
+			if (($this->validationSuite->isLengthStringValid ( $userNewRepresentation ["name"], TABLE_USER_NAME_LENGTH )) && ($this->validationSuite->isLengthStringValid ( $userNewRepresentation ["surname"], TABLE_USER_SURNAME_LENGTH )) && ($this->validationSuite->isLengthStringValid ( $userNewRepresentation ["email"], TABLE_USER_EMAIL_LENGTH )) && ($this->validationSuite->isLengthStringValid ( $userNewRepresentation ["password"], TABLE_USER_PASSWORD_LENGTH ))) {
+				$newUser = $this->UsersDAO->update ( $userID,$userNewRepresentation);	
+				
+				if($newUser > 0)
+					return (true);
+			}		
+		}	
+		return (false);
+		
 	}
 	public function searchUsers($string) {
-		//TODO
+	
+		if(!empty($string)){
+			$result = $this->UsersDAO->search($string);
+			return $result;
+		}
+			return (false);
 	}
 	public function deleteUser($userID) {
-		return($this->UsersDAO->delete($userID));
+		
+		//if validation is successful
+			if(!empty($userID)){		
+				if($deletedUser = $this->UsersDAO->delete ( $userID)){
+			}		return($deletedUser);
+			
+		}
+		// if validation fails or deletion fails
+		else
+			return false;
 	}
+	
+	
 	public function __destruct() {
 		$this->UsersDAO = null;
 		$this->dbmanager->closeConnection ();

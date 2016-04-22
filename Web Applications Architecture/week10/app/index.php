@@ -6,6 +6,21 @@ $app = new \Slim\Slim (); // slim run-time object
 
 require_once "conf/config.inc.php";
 
+
+//Create Resource 
+$app->get("/search/:user", function ($search = null) use ($app){
+	
+	$httpMethod = $app->request->getMethod();
+	$action = null;
+	$parameters ["SearchingString"] = $search;
+	
+	$action = ACTION_SEARCH_USERS;
+				
+	
+	return new loadRunMVCComponents ( "UserModel", "UserController", "jsonView", $action, $app, $parameters );
+});
+
+//Create Resource
 $app->map ( "/users(/:id)", function ($userID = null) use($app) {
 	
 	$httpMethod = $app->request->getMethod ();
@@ -32,10 +47,12 @@ $app->map ( "/users(/:id)", function ($userID = null) use($app) {
 			default :
 		}
 	}
-	return new loadRunMVCComponents ( "UserModel", "UserController", "jsonView", $action, $app, $parameters );
+	return new loadRunMVCComponents ( "UserModel", "UserController", "View", $action, $app, $parameters );
 } )->via ( "GET", "POST", "PUT", "DELETE" );
 
 $app->run ();
+
+
 class loadRunMVCComponents {
 	public $model, $controller, $view;
 	public function __construct($modelName, $controllerName, $viewName, $action, $app, $parameters = null) {

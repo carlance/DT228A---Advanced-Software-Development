@@ -8,6 +8,9 @@ class UserController {
 		$this->slimApp = $slimApp;
 		$this->requestBody = json_decode ( $this->slimApp->request->getBody (), true ); // this must contain the representation of the new user
 		
+		
+		
+		
 		if (! empty ( $parameteres ["id"] ))
 			$id = $parameteres ["id"];
 		
@@ -44,6 +47,7 @@ class UserController {
 		$answer = $this->model->getUsers ();
 		if ($answer != null) {
 			$this->slimApp->response ()->setStatus ( HTTPSTATUS_OK );
+			
 			$this->model->apiResponse = $answer;
 		} else {
 			$this->slimApp->response ()->setStatus ( HTTPSTATUS_NOCONTENT );
@@ -53,7 +57,6 @@ class UserController {
 			$this->model->apiResponse = $Message;
 		}
 	}
-	
 	private function getUser($userID) {
 		$answer = $this->model->getUser ( $userID );
 		if ($answer != null) {
@@ -68,13 +71,12 @@ class UserController {
 			$this->model->apiResponse = $Message;
 		}
 	}
-	
 	private function createNewUser($newUser) {
 		if ($newID = $this->model->createNewUser ( $newUser )) {
 			$this->slimApp->response ()->setStatus ( HTTPSTATUS_CREATED );
 			$Message = array (
 					GENERAL_MESSAGE_LABEL => GENERAL_RESOURCE_CREATED,
-					"id" => "$newID" 
+					"NewID" => "$newID" 
 			);
 			$this->model->apiResponse = $Message;
 		} else {
@@ -86,30 +88,55 @@ class UserController {
 		}
 	}
 	private function deleteUser($userId) {
-				$answer=$this->model->deleteUser($userId);
-			if(!empty($answer)){
-				$this->slimApp->response()->setStatus(HTTPSTATUS_OK);
-				$Message = array (
-						GENERAL_MESSAGE_LABEL => GENERAL_RESOURCE_DELETED
-				);
-				$this->model->apiResponse = $Message;
-			}else {
-			$this->slimApp->response ()->setStatus ( HTTPSTATUS_BADREQUEST );
+		// perform checks
+		// if query executes then
+		if ($answer = $this->model->deleteUser ( $userId )) {
+			
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_OK );
 			$Message = array (
-					GENERAL_MESSAGE_LABEL => GENERAL_NOCONTENT_MESSAGE
+					GENERAL_MESSAGE_LABEL => GENERAL_RESOURCE_DELETED 
+			);
+			$this->model->apiResponse = $Message;
+		} 		// or if query does not execute
+		else {
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_NOTFOUND );
+			$Message = array (
+					GENERAL_MESSAGE_LABEL => GENERAL_NOCONTENT_MESSAGE 
 			);
 			$this->model->apiResponse = $Message;
 		}
-			
 	}
-	
-	private function updateUser() {
-		//TODO
+	private function updateUser($userId, $updatedUser) {
+		if ($userUpdated = $this->model->updateUsers ( $userId, $updatedUser )) {
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_OK );
+			$Message = array (
+					GENERAL_MESSAGE_LABEL => GENERAL_RESOURCE_UPDATED,
+					"NewID" => "$userUpdated" 
+			);
+			$this->model->apiResponse = $Message;
+		} else {
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_BADREQUEST );
+			$Message = array (
+					GENERAL_MESSAGE_LABEL => GENERAL_INVALIDBODY 
+			);
+			$this->model->apiResponse = $Message;
+		}
 	}
 	private function searchUsers($string) {
-		//TODO
+		$search = $this->model->searchUsers ( $string );
+		if ($search != null) {
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_OK );
+			$this->model->apiResponse = $search;
+		} else {
+			$this->slimApp->response ()->setStatus ( HTTPSTATUS_NOTFOUND );
+			
+			$Message = array (
+					GENERAL_MESSAGE_LABEL => GENERAL_NOCONTENT_MESSAGE 
+			);
+			
+			$this->model->apiResponse = $Message;
+		}
 	}
 }
 
-//added comment 
 ?>
